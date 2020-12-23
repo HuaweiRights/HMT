@@ -4,9 +4,11 @@ import android.app.Activity;
 import android.view.Gravity;
 import android.widget.FrameLayout;
 import android.widget.Toast;
+import com.example.hmtest.hook.HookHelper;
 import com.example.hmtest.slice.MainAbilitySlice;
 import ohos.aafwk.ability.Ability;
 import ohos.aafwk.content.Intent;
+import ohos.aafwk.content.Operation;
 import ohos.agp.components.Button;
 import ohos.agp.components.Text;
 import ohos.hiviewdfx.HiLog;
@@ -36,8 +38,30 @@ public class MainAbility extends Ability {
             hello.setText(String.valueOf(++clickTime));
             manipulateAndroidActivity();
         });
-        Activity activity = getCurrentActivity();
         HiLog.debug(label, "HelloWorld2020");
+
+        findComponentById(ResourceTable.Id_hook).setClickedListener(component -> {
+//            HookHelper.replaceContextInstrumentation();
+            HookHelper.replaceActivityInstrumentation(getCurrentActivity());
+        });
+
+        Button bt_next = (Button) findComponentById(ResourceTable.Id_next);
+        bt_next.setClickedListener(component -> {
+            HiLog.debug(label, "next start");
+            Intent next = new Intent();
+
+            // 根据Ability的全称启动应用
+            // 通过Intent中的OperationBuilder类构造operation对象
+            Operation operation = new Intent.OperationBuilder()
+                    .withDeviceId("")                                       //指定设备标识（空串表示当前设备）
+                    .withBundleName("com.example.hmtest")                   //应用包名
+                    .withAbilityName("com.example.hmtest.SecondAbility")    //Ability名称
+                    .build();
+            next.setOperation(operation);
+            // 通过AbilitySlice的startAbility接口实现启动另一个页面
+            startAbility(next);
+            HiLog.debug(label, "next end");
+        });
     }
 
     // 通过Android API，向鸿蒙应用界面中添加控件
