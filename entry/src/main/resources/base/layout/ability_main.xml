@@ -26,6 +26,15 @@
         ohos:top_margin="50vp"/>
 
     <Button
+        ohos:id="$+id:info"
+        ohos:height="50vp"
+        ohos:width="match_parent"
+        ohos:text="Info"
+        ohos:text_color="#FF0000"
+        ohos:text_size="30fp"
+        ohos:top_margin="50vp"/>
+
+    <Button
         ohos:id="$+id:hook"
         ohos:height="50vp"
         ohos:width="match_parent"

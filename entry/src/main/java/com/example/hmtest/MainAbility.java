@@ -1,11 +1,13 @@
 package com.example.hmtest;
 
 import android.app.Activity;
+import android.content.Context;
+import android.os.Build;
+import android.util.Log;
 import android.view.Gravity;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 import com.example.hmtest.hook.HookHelper;
-import com.example.hmtest.slice.MainAbilitySlice;
 import ohos.aafwk.ability.Ability;
 import ohos.aafwk.content.Intent;
 import ohos.aafwk.content.Operation;
@@ -20,7 +22,8 @@ import java.util.Map;
 public class MainAbility extends Ability {
 
     // 定义日志标签
-    private static final HiLogLabel label = new HiLogLabel(HiLog.LOG_APP, 0x00201, "MY_TAG");
+    private static final HiLogLabel TAG = new HiLogLabel(HiLog.LOG_APP, 0x00201, "MainAbility");
+    private static final String TAG1 = "MainAbility";
 
     private int clickTime = 0;
 
@@ -38,16 +41,26 @@ public class MainAbility extends Ability {
             hello.setText(String.valueOf(++clickTime));
             manipulateAndroidActivity();
         });
-        HiLog.debug(label, "HelloWorld2020");
+        HiLog.debug(TAG, "HelloWorld2020");
+
+        findComponentById(ResourceTable.Id_info).setClickedListener(component -> {
+            Activity activity = getCurrentActivity();
+            Context context = activity.getApplicationContext();
+            Log.d(TAG1, "Build SDK INT: " + Build.VERSION.SDK_INT);
+            Log.d(TAG1, "PackageName: " + context.getPackageName());
+            Log.d(TAG1, "finish1? " + activity.isFinishing());
+            activity.finish();
+            Log.d(TAG1, "finish2? " + activity.isFinishing());
+        });
 
         findComponentById(ResourceTable.Id_hook).setClickedListener(component -> {
-//            HookHelper.replaceContextInstrumentation();
+            //            HookHelper.replaceContextInstrumentation();
             HookHelper.replaceActivityInstrumentation(getCurrentActivity());
         });
 
         Button bt_next = (Button) findComponentById(ResourceTable.Id_next);
         bt_next.setClickedListener(component -> {
-            HiLog.debug(label, "next start");
+            HiLog.debug(TAG, "next start");
             Intent next = new Intent();
 
             // 根据Ability的全称启动应用
@@ -60,7 +73,7 @@ public class MainAbility extends Ability {
             next.setOperation(operation);
             // 通过AbilitySlice的startAbility接口实现启动另一个页面
             startAbility(next);
-            HiLog.debug(label, "next end");
+            HiLog.debug(TAG, "next end");
         });
     }
 
@@ -68,7 +81,7 @@ public class MainAbility extends Ability {
     private void manipulateAndroidActivity() {
         Activity activity = getCurrentActivity();
         if (activity == null) return;
-        HiLog.debug(label, "" + activity.getLocalClassName());
+        HiLog.debug(TAG, "" + activity.getLocalClassName());
         Toast.makeText(activity, "单击次数" + clickTime, Toast.LENGTH_SHORT).show();
         FrameLayout decorView = (FrameLayout) activity.getWindow().getDecorView();
         android.widget.TextView someText = new android.widget.TextView(activity);
