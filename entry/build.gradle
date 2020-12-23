@@ -1,0 +1,15 @@
+apply plugin: 'com.huawei.ohos.hap'
+ohos {
+    compileSdkVersion 4
+    defaultConfig {
+        compatibleSdkVersion 4
+    }
+    
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar', '*.har'])
+    compileOnly fileTree(dir: 'libs', include: ['*.jar', '*.har'])  // 更改后
+    testCompile'junit:junit:4.12'
+    testCompile'junit:junit:4.12'
+}
